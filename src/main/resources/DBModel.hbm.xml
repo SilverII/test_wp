@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="weather.project.model.DBModel" table="data">
+        <meta attribute="class-description">
+            This class contains developer's details.
+        </meta>
+        <id name="id" type="int" column="ID">
+            <generator class="native"/>
+        </id>
+        <property name="login" column="LOGIN" type="string"/>
+        <property name="password" column="PASSWORD" type="string"/>
+        <property name="city" column="CITY" type="string"/>
+        <property name="source" column="SOURCE" type="string"/>
+    </class>
+</hibernate-mapping>
