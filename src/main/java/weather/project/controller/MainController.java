@@ -5,9 +5,9 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.springframework.web.client.RestTemplate;
-import weather.project.controller.json.JsonModel;
-import weather.project.controller.json2.Json2Model;
-import weather.project.model.DBModel;
+import weather.project.controller.jsonOpenWeather.JsonModel;
+import weather.project.controller.jsonWeatherBit.Json2Model;
+import weather.project.model.DBUserModel;
 import weather.project.model.LPModel;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -22,23 +22,29 @@ public class MainController {
     private static SessionFactory sessionFactory;
     String log;
 
+    //редирект на страницу индекс
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String index() {
         return "/index";
     }
+
+    //создание вью страницы аутентификации
     @RequestMapping(value = "/auth", method = RequestMethod.GET)
     public ModelAndView aut() {
         return new ModelAndView("auth", "command", new LPModel());
     }
 
+    //основная страница с отображением данных из апи
     @RequestMapping(value = "/main", method = RequestMethod.POST)
     public String mainPage(@ModelAttribute("kek") LPModel lpModel, ModelMap model) {
 
+        //создание фабрики сессий (бд) и получение значений со страницы аутентификации
         sessionFactory = new Configuration().configure().buildSessionFactory();
-        List<DBModel> info = listInfo(lpModel.getLogin());
+        List<DBUserModel> info = listInfo(lpModel.getLogin());
         log = lpModel.getLogin();
         RestTemplate rt = new RestTemplate();
 
+        //проверка аутентификации и отправка запросов к апи
         if (lpModel.getPassword().contentEquals(info.get(info.size()-1).getPassword())){
             if (info.get(info.size()-1).getSource().contentEquals("src1")){
                 JsonModel api_results = rt.getForObject("http://api.openweathermap.org/data/2.5/weather?id="+info.get(info.size()-1).getCity()+"&appid=18dc867da3ee24c0d9bbb6d86b6f9d34", JsonModel.class);
@@ -63,15 +69,17 @@ public class MainController {
         }
     }
 
+    //создание вью настроек
     @RequestMapping(value = "/settings", method = RequestMethod.GET)
     public ModelAndView setPage() {
         return new ModelAndView("settings", "command", new LPModel());
     }
 
+    //создание фабрики сессий (бд) и отправка транзакции
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     public String save(@ModelAttribute("save") LPModel lpModel, ModelMap model) {
         sessionFactory = new Configuration().configure().buildSessionFactory();
-        List<DBModel> info = listInfo(log);
+        List<DBUserModel> info = listInfo(log);
         String city = null;
         //login as city + password as source
         if (lpModel.getPassword().contentEquals("src1")){
@@ -90,22 +98,24 @@ public class MainController {
         return "/index";
     }
 
-    public List<DBModel> listInfo(String login) {
+    //функция получения данных из бд
+    public List<DBUserModel> listInfo(String login) {
         Session session = this.sessionFactory.openSession();
         Transaction transaction = null;
 
         transaction = session.beginTransaction();
-        List<DBModel> pass = session.createQuery("FROM DBModel WHERE login = " + login).list();
+        List<DBUserModel> pass = session.createQuery("FROM DBUserModel WHERE login = " + login).list();
 
         transaction.commit();
         session.close();
         return pass;
     }
 
+    //функция обновления данных в бд
     public void updateInfo(int id,String city, String source) {
         Session session = this.sessionFactory.openSession();
         Transaction transaction = null;
-        DBModel info = (DBModel) session.get(DBModel.class, id);
+        DBUserModel info = (DBUserModel) session.get(DBUserModel.class, id);
         info.setCity(city);
         info.setSource(source);
         transaction = session.beginTransaction();

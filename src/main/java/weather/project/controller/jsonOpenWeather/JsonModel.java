@@ -1,4 +1,4 @@
-package weather.project.controller.json;
+package weather.project.controller.jsonOpenWeather;
 
 import java.util.HashMap;
 import java.util.List;

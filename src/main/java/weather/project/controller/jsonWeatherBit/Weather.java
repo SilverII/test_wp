@@ -1,4 +1,4 @@
-package weather.project.controller.json;
+package weather.project.controller.jsonWeatherBit;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,42 +11,39 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-        "id",
-        "main",
-        "description",
-        "icon"
+        "icon",
+        "code",
+        "description"
 })
 public class Weather {
 
-    @JsonProperty("id")
-    private Integer id;
-    @JsonProperty("main")
-    private String main;
-    @JsonProperty("description")
-    private String description;
     @JsonProperty("icon")
     private String icon;
+    @JsonProperty("code")
+    private Integer code;
+    @JsonProperty("description")
+    private String description;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
-    @JsonProperty("id")
-    public Integer getId() {
-        return id;
+    @JsonProperty("icon")
+    public String getIcon() {
+        return icon;
     }
 
-    @JsonProperty("id")
-    public void setId(Integer id) {
-        this.id = id;
+    @JsonProperty("icon")
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 
-    @JsonProperty("main")
-    public String getMain() {
-        return main;
+    @JsonProperty("code")
+    public Integer getCode() {
+        return code;
     }
 
-    @JsonProperty("main")
-    public void setMain(String main) {
-        this.main = main;
+    @JsonProperty("code")
+    public void setCode(Integer code) {
+        this.code = code;
     }
 
     @JsonProperty("description")
@@ -57,16 +54,6 @@ public class Weather {
     @JsonProperty("description")
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    @JsonProperty("icon")
-    public String getIcon() {
-        return icon;
-    }
-
-    @JsonProperty("icon")
-    public void setIcon(String icon) {
-        this.icon = icon;
     }
 
     @JsonAnyGetter

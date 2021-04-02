@@ -1,6 +1,7 @@
-package weather.project.controller.json;
+package weather.project.controller.jsonWeatherBit;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
@@ -11,36 +12,36 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-        "speed",
-        "deg"
+        "data",
+        "count"
 })
-public class Wind {
+public class Json2Model {
 
-    @JsonProperty("speed")
-    private Double speed;
-    @JsonProperty("deg")
-    private Integer deg;
+    @JsonProperty("data")
+    private List<Datum> data = null;
+    @JsonProperty("count")
+    private Integer count;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
-    @JsonProperty("speed")
-    public Double getSpeed() {
-        return speed;
+    @JsonProperty("data")
+    public List<Datum> getData() {
+        return data;
     }
 
-    @JsonProperty("speed")
-    public void setSpeed(Double speed) {
-        this.speed = speed;
+    @JsonProperty("data")
+    public void setData(List<Datum> data) {
+        this.data = data;
     }
 
-    @JsonProperty("deg")
-    public Integer getDeg() {
-        return deg;
+    @JsonProperty("count")
+    public Integer getCount() {
+        return count;
     }
 
-    @JsonProperty("deg")
-    public void setDeg(Integer deg) {
-        this.deg = deg;
+    @JsonProperty("count")
+    public void setCount(Integer count) {
+        this.count = count;
     }
 
     @JsonAnyGetter

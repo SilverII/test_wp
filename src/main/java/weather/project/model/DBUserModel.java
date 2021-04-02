@@ -1,6 +1,6 @@
 package weather.project.model;
 
-public class DBModel {
+public class DBUserModel {
 
     private int id;
     private String login;
@@ -48,6 +48,6 @@ public class DBModel {
         this.id = id;
     }
 
-    public DBModel() {
+    public DBUserModel() {
     }
 }

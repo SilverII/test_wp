@@ -1,7 +1,6 @@
-package weather.project.controller.json2;
+package weather.project.controller.jsonOpenWeather;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
@@ -12,36 +11,36 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-        "data",
-        "count"
+        "lon",
+        "lat"
 })
-public class Json2Model {
+public class Coord {
 
-    @JsonProperty("data")
-    private List<Datum> data = null;
-    @JsonProperty("count")
-    private Integer count;
+    @JsonProperty("lon")
+    private Double lon;
+    @JsonProperty("lat")
+    private Double lat;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
-    @JsonProperty("data")
-    public List<Datum> getData() {
-        return data;
+    @JsonProperty("lon")
+    public Double getLon() {
+        return lon;
     }
 
-    @JsonProperty("data")
-    public void setData(List<Datum> data) {
-        this.data = data;
+    @JsonProperty("lon")
+    public void setLon(Double lon) {
+        this.lon = lon;
     }
 
-    @JsonProperty("count")
-    public Integer getCount() {
-        return count;
+    @JsonProperty("lat")
+    public Double getLat() {
+        return lat;
     }
 
-    @JsonProperty("count")
-    public void setCount(Integer count) {
-        this.count = count;
+    @JsonProperty("lat")
+    public void setLat(Double lat) {
+        this.lat = lat;
     }
 
     @JsonAnyGetter

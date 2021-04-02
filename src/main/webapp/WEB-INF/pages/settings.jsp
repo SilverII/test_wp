@@ -10,7 +10,7 @@
 <table align="center">
  <tr>
   <td>
-    <INPUT TYPE="radio" name="login" value="EKB" checked>EKB
+    <INPUT TYPE="radio" name="login" value="EKB">EKB
   </td>
   <td>
     <INPUT TYPE="radio" name="login" value="MSK">MSK
@@ -23,7 +23,7 @@
   </tr>
   <tr>
       <td>
-        <INPUT TYPE="radio" name="password" value="src1" checked>OpenWeather
+        <INPUT TYPE="radio" name="password" value="src1">OpenWeather
       </td>
       <td>
         <INPUT TYPE="radio" name="password" value="src2">WeatherBit

@@ -1,4 +1,4 @@
-package weather.project.controller.json2;
+package weather.project.controller.jsonWeatherBit;
 
 import java.util.HashMap;
 import java.util.Map;

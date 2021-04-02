@@ -3,7 +3,7 @@
         "-//Hibernate/Hibernate Mapping DTD//EN"
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-    <class name="weather.project.model.DBModel" table="data">
+    <class name="weather.project.model.DBUserModel" table="data">
         <meta attribute="class-description">
             This class contains developer's details.
         </meta>
