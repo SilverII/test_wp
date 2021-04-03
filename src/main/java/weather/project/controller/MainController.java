@@ -21,6 +21,8 @@ import java.util.*;
 public class MainController {
     private static SessionFactory sessionFactory;
     String log;
+    String src;
+    String cty;
 
     //редирект на страницу индекс
     @RequestMapping(value = "/", method = RequestMethod.GET)
@@ -36,13 +38,15 @@ public class MainController {
 
     //основная страница с отображением данных из апи
     @RequestMapping(value = "/main", method = RequestMethod.POST)
-    public String mainPage(@ModelAttribute("kek") LPModel lpModel, ModelMap model) {
+    public String mainPage(@ModelAttribute("main") LPModel lpModel, ModelMap model) {
 
         //создание фабрики сессий (бд) и получение значений со страницы аутентификации
         sessionFactory = new Configuration().configure().buildSessionFactory();
         List<DBUserModel> info = listInfo(lpModel.getLogin());
         log = lpModel.getLogin();
         RestTemplate rt = new RestTemplate();
+        src = info.get(info.size()-1).getSource();
+        cty = info.get(info.size()-1).getCity();
 
         //проверка аутентификации и отправка запросов к апи
         if (lpModel.getPassword().contentEquals(info.get(info.size()-1).getPassword())){
@@ -71,8 +75,12 @@ public class MainController {
 
     //создание вью настроек
     @RequestMapping(value = "/settings", method = RequestMethod.GET)
-    public ModelAndView setPage() {
-        return new ModelAndView("settings", "command", new LPModel());
+    public ModelAndView setPage(@ModelAttribute ModelMap model) {
+        ModelAndView mav = new ModelAndView("settings", "command", new LPModel());
+        mav.addObject("src", src);
+        mav.addObject("cty", cty);
+
+        return mav;
     }
 
     //создание фабрики сессий (бд) и отправка транзакции
