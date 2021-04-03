@@ -23,7 +23,7 @@
         </property>
 
         <!-- List of XML mapping files -->
-        <mapping resource="DBModel.hbm.xml"/>
+        <mapping resource="DBUserModel.hbm.xml"/>
 
     </session-factory>
 </hibernate-configuration>
