@@ -6,7 +6,7 @@
 <body>
 
 <h2 align="center">Log In</h2>
-<form:form method="post" action="main">
+<form:form method="post" action="checkAuth">
   <table align="center">
     <tr>
       <td><form:label path="login">Login</form:label></td>

@@ -9,16 +9,16 @@
 <table align="center">
   <tr>
     <td>Temperature</td>
-    <td>${temp}</td>
+    <td>${temp>100?temp-273:temp}°C</td>
   </tr>
   <tr>
   <tr>
     <td>Wind</td>
-    <td>${wind}</td>
+    <td>${wind} м/с</td>
   </tr>
   <tr>
      <td>Clouds</td>
-     <td>${clouds}</td>
+     <td>${clouds}%</td>
   </tr>
 </table>
 <h3 align="center"><a href="settings">Settings</a></h3>

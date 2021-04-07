@@ -5,6 +5,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import weather.project.controller.jsonOpenWeather.JsonModel;
 import weather.project.controller.jsonWeatherBit.Json2Model;
 import weather.project.model.DBUserModel;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import java.util.*;
+
 
 @Controller
 public class MainController {
@@ -32,50 +34,56 @@ public class MainController {
 
     //создание вью страницы аутентификации
     @RequestMapping(value = "/auth", method = RequestMethod.GET)
-    public ModelAndView aut() {
+    public ModelAndView auth() {
         return new ModelAndView("auth", "command", new LPModel());
     }
 
-    //основная страница с отображением данных из апи
-    @RequestMapping(value = "/main", method = RequestMethod.POST)
-    public String mainPage(@ModelAttribute("main") LPModel lpModel, ModelMap model) {
-
-        //создание фабрики сессий (бд) и получение значений со страницы аутентификации
+    //класс проверки аутентификации и получения некоторых данных
+    @RequestMapping(value = "/checkAuth", method = RequestMethod.POST)
+    public String checkAuth(@ModelAttribute LPModel lpModel){
         sessionFactory = new Configuration().configure().buildSessionFactory();
         List<DBUserModel> info = listInfo(lpModel.getLogin());
-        log = lpModel.getLogin();
-        RestTemplate rt = new RestTemplate();
-        src = info.get(info.size()-1).getSource();
-        cty = info.get(info.size()-1).getCity();
 
-        //проверка аутентификации и отправка запросов к апи
         if (lpModel.getPassword().contentEquals(info.get(info.size()-1).getPassword())){
-            if (info.get(info.size()-1).getSource().contentEquals("src1")){
-                JsonModel api_results = rt.getForObject("http://api.openweathermap.org/data/2.5/weather?id="+info.get(info.size()-1).getCity()+"&appid=18dc867da3ee24c0d9bbb6d86b6f9d34", JsonModel.class);
-
-                model.addAttribute("temp", api_results.getMain().getTemp());
-                model.addAttribute("wind", api_results.getWind().getSpeed());
-                model.addAttribute("clouds", api_results.getClouds().getAll());
-                return "result";
-            }
-            else if (info.get(info.size()-1).getSource().contentEquals("src2")){
-                Json2Model api_results = rt.getForObject("https://api.weatherbit.io/v2.0/current?&city_id="+info.get(info.size()-1).getCity()+"&key=6afae13fa97e4b9296c6ce0354e14ab8&include=minutely", Json2Model.class);
-
-                model.addAttribute("temp", api_results.getData().get(api_results.getData().size()-1).getTemp());
-                model.addAttribute("wind", api_results.getData().get(api_results.getData().size()-1).getWindSpd());
-                model.addAttribute("clouds", api_results.getData().get(api_results.getData().size()-1).getClouds());
-                return "result";
-            }
-            else return "/settings";
+            log = lpModel.getLogin();
+            src = info.get(info.size()-1).getSource();
+            cty = info.get(info.size()-1).getCity();
+            return "forward:/main";
         }
-        else {
-            return "/index";
-        }
+        else return "forward:/index";
+    }
+
+    //основная страница с отображением данных из апи
+    @RequestMapping(value = "/main", method = RequestMethod.POST)//post
+    public ModelAndView mainPage(){
+        ModelAndView model = new ModelAndView("result");
+        //sessionFactory = new Configuration().configure().buildSessionFactory();
+        //List<DBUserModel> info = listInfo(lpModel.getLogin());
+        //создание фабрики сессий (бд) и получение значений со страницы аутентификации
+        RestTemplate rt = new RestTemplate();
+
+        //отправка запросов к апи
+            if (src.contentEquals("src1")){
+                JsonModel api_results = rt.getForObject("http://api.openweathermap.org/data/2.5/weather?id="+cty+"&appid=18dc867da3ee24c0d9bbb6d86b6f9d34", JsonModel.class);
+                model.addObject("temp", api_results.getMain().getTemp());
+                model.addObject("wind", api_results.getWind().getSpeed());
+                model.addObject("clouds", api_results.getClouds().getAll());
+                return model;
+            }
+            else if (src.contentEquals("src2")){
+                Json2Model api_results = rt.getForObject("https://api.weatherbit.io/v2.0/current?&city_id="+cty+"&key=6afae13fa97e4b9296c6ce0354e14ab8&include=minutely", Json2Model.class);
+
+                model.addObject("temp", api_results.getData().get(api_results.getData().size()-1).getTemp());
+                model.addObject("wind", api_results.getData().get(api_results.getData().size()-1).getWindSpd());
+                model.addObject("clouds", api_results.getData().get(api_results.getData().size()-1).getClouds());
+                return model;
+            }
+            else return setPage();
     }
 
     //создание вью настроек
     @RequestMapping(value = "/settings", method = RequestMethod.GET)
-    public ModelAndView setPage(@ModelAttribute ModelMap model) {
+    public ModelAndView setPage() {
         ModelAndView mav = new ModelAndView("settings", "command", new LPModel());
         mav.addObject("src", src);
         mav.addObject("cty", cty);
@@ -85,7 +93,7 @@ public class MainController {
 
     //создание фабрики сессий (бд) и отправка транзакции
     @RequestMapping(value = "/save", method = RequestMethod.POST)
-    public String save(@ModelAttribute("save") LPModel lpModel, ModelMap model) {
+    public String save(@ModelAttribute("save") LPModel lpModel) {
         sessionFactory = new Configuration().configure().buildSessionFactory();
         List<DBUserModel> info = listInfo(log);
         String city = null;
