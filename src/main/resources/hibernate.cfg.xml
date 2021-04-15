@@ -24,6 +24,7 @@
 
         <!-- List of XML mapping files -->
         <mapping resource="DBUserModel.hbm.xml"/>
+        <mapping resource="DBWeatherModel.hbm.xml"/>
 
     </session-factory>
 </hibernate-configuration>

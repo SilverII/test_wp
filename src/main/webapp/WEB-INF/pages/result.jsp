@@ -9,12 +9,12 @@
 <table align="center">
   <tr>
     <td>Temperature</td>
-    <td>${temp>100?temp-273:temp}°C</td>
+    <td>${temp>100?temp-273:temp} C</td>
   </tr>
   <tr>
   <tr>
     <td>Wind</td>
-    <td>${wind} м/с</td>
+    <td>${wind} m/s</td>
   </tr>
   <tr>
      <td>Clouds</td>

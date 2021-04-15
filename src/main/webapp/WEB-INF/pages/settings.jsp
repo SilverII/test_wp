@@ -10,13 +10,13 @@
 <table align="center">
  <tr>
   <td>
-    <INPUT TYPE="radio" name="login" value="EKB" ${cty == "1486209" ? 'checked' : ''}>EKB
+    <INPUT TYPE="radio" name="login" value="EKB" ${cty == "EKB" ? 'checked' : ''}>EKB
   </td>
   <td>
-    <INPUT TYPE="radio" name="login" value="MSK" ${cty == "524894" ? 'checked' : ''} ${cty == "524901" ? 'checked' : ''}>MSK
+    <INPUT TYPE="radio" name="login" value="MSK" ${cty == "MSK" ? 'checked' : ''}>MSK
   </td>
   <td>
-    <INPUT TYPE="radio" name="login" value="SPB" ${cty == "498817" ? 'checked' : ''}>SPB
+    <INPUT TYPE="radio" name="login" value="SPB" ${cty == "SPB" ? 'checked' : ''}>SPB
   </td>
   </tr>
   <tr>

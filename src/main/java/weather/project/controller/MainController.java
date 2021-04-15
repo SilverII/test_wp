@@ -9,6 +9,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import weather.project.controller.jsonOpenWeather.JsonModel;
 import weather.project.controller.jsonWeatherBit.Json2Model;
 import weather.project.model.DBUserModel;
+import weather.project.model.DBWeatherModel;
 import weather.project.model.LPModel;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -57,21 +58,22 @@ public class MainController {
     @RequestMapping(value = "/main", method = RequestMethod.POST)//post
     public ModelAndView mainPage(){
         ModelAndView model = new ModelAndView("result");
-        //sessionFactory = new Configuration().configure().buildSessionFactory();
-        //List<DBUserModel> info = listInfo(lpModel.getLogin());
+        sessionFactory = new Configuration().configure().buildSessionFactory();
+        List<DBWeatherModel> info = listDataW();
         //создание фабрики сессий (бд) и получение значений со страницы аутентификации
         RestTemplate rt = new RestTemplate();
 
         //отправка запросов к апи
             if (src.contentEquals("src1")){
-                JsonModel api_results = rt.getForObject("http://api.openweathermap.org/data/2.5/weather?id="+cty+"&appid=18dc867da3ee24c0d9bbb6d86b6f9d34", JsonModel.class);
-                model.addObject("temp", api_results.getMain().getTemp());
+                JsonModel api_results = rt.getForObject(info.get(info.size()-1).getApi(), JsonModel.class);
+
+                model.addObject("temp", Math.round(api_results.getMain().getTemp()));
                 model.addObject("wind", api_results.getWind().getSpeed());
                 model.addObject("clouds", api_results.getClouds().getAll());
                 return model;
             }
             else if (src.contentEquals("src2")){
-                Json2Model api_results = rt.getForObject("https://api.weatherbit.io/v2.0/current?&city_id="+cty+"&key=6afae13fa97e4b9296c6ce0354e14ab8&include=minutely", Json2Model.class);
+                Json2Model api_results = rt.getForObject(info.get(info.size()-1).getApi(), Json2Model.class);
 
                 model.addObject("temp", api_results.getData().get(api_results.getData().size()-1).getTemp());
                 model.addObject("wind", api_results.getData().get(api_results.getData().size()-1).getWindSpd());
@@ -96,25 +98,12 @@ public class MainController {
     public String save(@ModelAttribute("save") LPModel lpModel) {
         sessionFactory = new Configuration().configure().buildSessionFactory();
         List<DBUserModel> info = listInfo(log);
-        String city = null;
-        //login as city + password as source
-        if (lpModel.getPassword().contentEquals("src1")){
-            if (lpModel.getLogin().contentEquals("EKB")){city = "1486209";}
-            if (lpModel.getLogin().contentEquals("SPB")){city = "498817";}
-            if (lpModel.getLogin().contentEquals("MSK")){city = "524894";}
-        }
-        else if (lpModel.getPassword().contentEquals("src2")){
-            if (lpModel.getLogin().contentEquals("EKB")){city = "1486209";}
-            if (lpModel.getLogin().contentEquals("SPB")){city = "498817";}
-            if (lpModel.getLogin().contentEquals("MSK")){city = "524901";}
-        }
-        else return "/settings";
 
-        updateInfo(info.get(info.size()-1).getId(), city, lpModel.getPassword());
-        return "/index";
+        updateInfo(info.get(info.size()-1).getId(), lpModel.getLogin(), lpModel.getPassword());
+        return "forward:/main";
     }
 
-    //функция получения данных из бд
+    //функция получения данных из бд table1
     public List<DBUserModel> listInfo(String login) {
         Session session = this.sessionFactory.openSession();
         Transaction transaction = null;
@@ -127,7 +116,7 @@ public class MainController {
         return pass;
     }
 
-    //функция обновления данных в бд
+    //функция обновления данных в бд table1
     public void updateInfo(int id,String city, String source) {
         Session session = this.sessionFactory.openSession();
         Transaction transaction = null;
@@ -138,5 +127,18 @@ public class MainController {
         session.update(info);
         transaction.commit();
         session.close();
+    }
+
+    //функция получения данных из бд table 2
+    public List<DBWeatherModel> listDataW() {
+        Session session = this.sessionFactory.openSession();
+        Transaction transaction = null;
+
+        transaction = session.beginTransaction();
+        List<DBWeatherModel> pass = session.createQuery("FROM DBWeatherModel WHERE city = '" + cty + "' and src = '" + src + "'").list();
+
+        transaction.commit();
+        session.close();
+        return pass;
     }
 }
