@@ -93,11 +93,13 @@ public class MainController {
         return mav;
     }
 
-    //создание фабрики сессий (бд) и отправка транзакции
+    //создание фабрики сессий (бд) и отправка транзакции LOGIN - city, PASSWORD - source
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     public String save(@ModelAttribute("save") LPModel lpModel) {
         sessionFactory = new Configuration().configure().buildSessionFactory();
         List<DBUserModel> info = listInfo(log);
+        cty = lpModel.getLogin();
+        src = lpModel.getPassword();
 
         updateInfo(info.get(info.size()-1).getId(), lpModel.getLogin(), lpModel.getPassword());
         return "forward:/main";

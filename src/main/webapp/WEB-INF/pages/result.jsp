@@ -4,7 +4,7 @@
   <title>Weather Info</title>
 </head>
 <body>
-<%response.setHeader("Refresh", "180;URL=/WP/auth");%>
+<%response.setHeader("Refresh", "180");%><!-- 180;URL=/WP/auth -->
 <h2 align="center">Weather Information</h2>
 <table align="center">
   <tr>
